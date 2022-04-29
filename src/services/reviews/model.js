@@ -1,17 +1,18 @@
-import mongoose from "mongoose";
+import mongoose from "mongoose"
 
-const {Schema, model} = mongoose
-
+const { Schema, model } = mongoose
 
 const reviewSchema = new Schema(
-    {
-        comment: {type: String, required: true},
-        rate: {type: Number, required: true, max: 5}, 
-        productId: {type: Schema.Types.ObjectId, required: treu},
-    },
-    {
-        timestamps: true
-    }
+  {
+    comment: { type: String, required: true },
+    rate: { type: Number, required: true, max: 5 },
+    productId: { type: mongoose.Types.ObjectId, ref: "product", id: false, required: true },
+  },
+  {
+    timestamps: true,
+  }
 )
 
-export default model(reviewSchema);
+export default model("Review", reviewSchema)
+
+// products: [{ productId: { type: mongoose.Types.ObjectId, ref: "Book" }, quantity: Number, _id: false }],    RICCARDO'S CODE
