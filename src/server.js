@@ -2,6 +2,7 @@ import express from 'express'
 import listendpoints from 'express-list-endpoints'
 import mongoose from 'mongoose'
 import cors from 'cors'
+import reviewRouter from './services/reviews/index.js'
 
 const server = express()
 const port = process.env.PORT || 3002
@@ -12,7 +13,7 @@ server.use(express.json())
 
 
 // server.use('/product')
-// server.use('/reviews')
+server.use('/reviews', reviewRouter)
 
 
 mongoose.connect(process.env.MONGO_CONNECTION)
