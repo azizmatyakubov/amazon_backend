@@ -17,7 +17,11 @@ reviewsRouter.post("/", async (req, res, next) => {
 reviewsRouter.get("/", async (req, res, next) => {
   try {
     const review = await ReviewsModel.find()
-    res.status(200).send(review)
+    if (review) {
+      res.status(200).send(review)
+    } else {
+      next(createError(404, "There isn't any review available"))
+    }
   } catch (error) {
     next(error)
   }
@@ -27,7 +31,11 @@ reviewsRouter.get("/:reviewId", async (req, res, next) => {
   try {
     const updatedReview = await ReviewsModel.findByIdAndUpdate(req.params.blogId, { $push: { comments: req.body } }, { new: true })
 
-    res.status(201).send(updatedReview)
+    if (updatedReview) {
+      res.status(201).send(updatedReview)
+    } else {
+      next(createError(404, "There isn't any review available"))
+    }
   } catch (error) {
     next(error)
   }
@@ -44,9 +52,12 @@ reviewsRouter.put("/:reviewId", async (req, res, next) => {
 ///////////
 reviewsRouter.delete("/:reviewId", async (req, res, next) => {
   try {
-    await ReviewsModel.findByIdAndDelete(req.params.reviewId)
-
-    res.status(201).send("RIP")
+    const reviewToDelete = await ReviewsModel.findByIdAndDelete(req.params.reviewId)
+    if (reviewToDelete) {
+      res.status(201).send("RIP")
+    } else {
+      next(createError(404, "There isn't any review to delete here"))
+    }
   } catch (error) {
     next(error)
   }

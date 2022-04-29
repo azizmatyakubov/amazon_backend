@@ -8,11 +8,7 @@ const reviewSchema = new Schema(
     rate: { type: Number, required: true, max: 5 },
     productId: { type: mongoose.Types.ObjectId, ref: "product", id: false, required: true },
   },
-  {
-    timestamps: true,
-  }
+  { timestamps: true }
 )
 
 export default model("Review", reviewSchema)
-
-// products: [{ productId: { type: mongoose.Types.ObjectId, ref: "Book" }, quantity: Number, _id: false }],    RICCARDO'S CODE
