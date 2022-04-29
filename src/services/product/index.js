@@ -42,7 +42,9 @@ productRouter.get("/", async (req, res, next) => {
 // =====================================
 productRouter.get("/:productId", async (req, res, next) => {
   try {
-    const product = await productmodel.findById(req.params.productId);
+    const product = await productmodel
+      .findById(req.params.productId)
+      .populate("reviews");
 
     res.send(product);
   } catch (error) {
