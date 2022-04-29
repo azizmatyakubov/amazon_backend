@@ -5,12 +5,11 @@ import ReviewsModel from "./model.js"
 const reviewsRouter = express.Router()
 
 ///////////
-reviewsRouter.post("/", async (req, res, next) => {
+reviewsRouter.post("/:productId/reviews", async (req, res, next) => {
   try {
-    const newreview = new ReviewsModel(req.body)
-    const { _id } = await newreview.save()
+    const newReview = {...req.body, date: Date()}
+    console.log(newReview)
 
-    res.status(201).send({ _id })
   } catch (error) {
     next(error)
   }
