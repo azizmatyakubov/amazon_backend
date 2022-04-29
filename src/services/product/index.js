@@ -1,25 +1,38 @@
 import express from "express";
 import createError from "http-errors";
 import productmodel from "./model.js";
-import reviewsModel from "./model.js";
+
+import review from "../reviews/model.js";
 // =====================================
 const productRouter = express.Router();
 // =====================================
-productRouter.post("/", async (req, res, next) => {
+productRouter.post("/:productId/reviews", async (req, res, next) => {
   try {
-    const product = await productmodel(req.body);
-    const { _id } = await product.save();
-    res.send({ _id });
+    const product = await productmodel.findById(req.params.productId);
+    if (product) {
+      const newReview = await new review({
+        ...req.body,
+        productId: req.params.productId,
+      }).save();
+
+      const { reviews } = await productmodel.findByIdAndUpdate(
+        req.params.productId,
+        {
+          $push: { reviews: newReview._id },
+        },
+        { new: true }
+      );
+      res.send(reviews);
+    }
   } catch (error) {
-    next(createError(404, "Product page not found!"));
+    console.log(error);
+    next(createError(500, error.message));
   }
 });
 // =====================================
 productRouter.get("/", async (req, res, next) => {
   try {
-    const getproduct = await productmodel
-      .find()
-      .populate({ path: "reviews", select: "_id comment rate" });
+    const getproduct = await productmodel.find().populate("reviews");
 
     res.send(getproduct);
   } catch (error) {
@@ -61,43 +74,20 @@ productRouter.delete("/:productId", async (req, res, next) => {
     next(createError(404, `Product with Id${req.params.productId} not found!`));
   }
 });
-
-productRouter.post("/:productId/reviews", async (req, res, next) => {
-  try {
-    const newReview = await reviewsModel.findById(req.body.reviewId);
-
-    const convertReview = { ...newReview.toObject(), date: new Date() };
-
-    const updatedProduct = await productmodel.findByIdAndUpdate(
-      req.params.productId,
-      { $push: { reviews: convertReview } },
-      { new: true, runValidators: true }
-    );
-    if (updatedProduct) {
-      res.status(200).send(updatedProduct);
-    } else {
-      next(
-        createError(404, `Product with id ${req.params.productId} not found`)
-      );
-    }
-  } catch (error) {
-    next(error);
-  }
-});
-
 productRouter.get("/:productId/reviews", async (req, res, next) => {
   try {
-    // const product = await productmodel.findById(req.params.productId).populate({ path: "reviews", select: "_id comment rate " })
-    // if (product) {
-    //   res.send(product.reviews)
-    // } else {
-    //   next(createError(404, `Product with Id${req.params.productId} not found!`))
-    // }
+    const product = await productmodel.findById(req.params.productId);
+    // .populate({ path: "reviews", select: "_id comment rate " });
+    if (product) {
+      res.send(product.reviews);
+    } else {
+      next(
+        createError(404, `Product with Id${req.params.productId} not found!`)
+      );
+    }
   } catch (error) {
     next(createError(404, `Product with Id${req.params.productId} not found!`));
   }
 });
 // =====================================
 export default productRouter;
-
-// 626bd86639772a270c0f5d2a
