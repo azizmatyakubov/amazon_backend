@@ -8,7 +8,7 @@ const productSchema = new Schema(
     imageUrl: { type: String },
     price: { type: Number },
     category: { type: String },
-    reviews: [{ type: Schema.Types.ObjectId, ref: "review" }],
+    reviews: [{ type: Schema.Types.ObjectId, ref: "Review" }],
   },
   { timestamps: true }
 );

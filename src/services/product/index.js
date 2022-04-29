@@ -1,5 +1,5 @@
 import express from "express";
-import createHttpError from "http-errors";
+import createError from "http-errors";
 import productmodel from "./model.js";
 // =====================================
 const productRouter = express.Router();
@@ -27,25 +27,31 @@ productRouter.get("/", async (req, res, next) => {
 // =====================================
 productRouter.get("/:productId", async (req, res, next) => {
   try {
-    res.send();
+    const product = await productmodel.findById(req.params.productId);
+    res.send(product);
   } catch (error) {
-    next(createError(404, "Product page not found!"));
+    next(createError(404, `Product with ${req.params.productId} not found!`));
   }
 });
 // =====================================
 productRouter.put("/:productId", async (req, res, next) => {
   try {
+    const modify = await productmodel(req.params.productId, req.body, {
+      new: true,
+      runValidators: true,
+    });
     res.send();
   } catch (error) {
-    next(createError(404, "Product page not found!"));
+    next(createError(404, `Product with Id${req.params.productId} not found!`));
   }
 });
 // =====================================
 productRouter.delete("/:productId", async (req, res, next) => {
   try {
+    const delet = await productmodel.findByIdAndDelete(req.params.productId);
     res.send();
   } catch (error) {
-    next(createError(404, "Product page not found!"));
+    next(createError(404, `Product with Id${req.params.productId} not found!`));
   }
 });
 // =====================================

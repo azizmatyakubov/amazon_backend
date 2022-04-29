@@ -3,6 +3,12 @@ import listendpoints from "express-list-endpoints";
 import mongoose from "mongoose";
 import cors from "cors";
 import productRouter from "./services/product/index.js";
+import {
+  genericErrorHandler,
+  notFoundErrorHandler,
+  badRequestErrorHandler,
+  unauthorizedErrorHandler,
+} from "./errorHandlers.js";
 
 const server = express();
 const port = process.env.PORT || 3002;
@@ -12,6 +18,13 @@ server.use(express.json());
 
 server.use("/product", productRouter);
 // server.use('/reviews')
+// ******************************* ERROR MIDDLEWARES *************************
+
+server.use(badRequestErrorHandler); // 400
+server.use(unauthorizedErrorHandler); // 401
+server.use(notFoundErrorHandler); // 404
+server.use(genericErrorHandler); // 500
+// ==============================================================================
 
 mongoose.connect(process.env.MONGO_CONNECTION);
 mongoose.connection.on("connected", () => {
