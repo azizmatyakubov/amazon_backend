@@ -16,9 +16,8 @@ productRouter.post("/", async (req, res, next) => {
 // =====================================
 productRouter.get("/", async (req, res, next) => {
   try {
-    const getproduct = await productmodel
-      .find()
-      .populate({ path: "reviews", select: " _id comment rate" });
+    const getproduct = await productmodel.find();
+
     res.send(getproduct);
   } catch (error) {
     next(createError(404, "Product page not found!"));
@@ -28,6 +27,7 @@ productRouter.get("/", async (req, res, next) => {
 productRouter.get("/:productId", async (req, res, next) => {
   try {
     const product = await productmodel.findById(req.params.productId);
+
     res.send(product);
   } catch (error) {
     next(createError(404, `Product with ${req.params.productId} not found!`));
@@ -36,10 +36,14 @@ productRouter.get("/:productId", async (req, res, next) => {
 // =====================================
 productRouter.put("/:productId", async (req, res, next) => {
   try {
-    const modify = await productmodel(req.params.productId, req.body, {
-      new: true,
-      runValidators: true,
-    });
+    const modify = await productmodel.findByIdAndUpdate(
+      req.params.productId,
+      req.body,
+      {
+        new: true,
+        runValidators: true,
+      }
+    );
     res.send();
   } catch (error) {
     next(createError(404, `Product with Id${req.params.productId} not found!`));
@@ -57,6 +61,7 @@ productRouter.delete("/:productId", async (req, res, next) => {
 productRouter.get("/:productId/reviews", async (req, res, next) => {
   try {
     const product = await productmodel.findById(req.params.productId);
+    // .populate({ path: "reviews", select: "_id comment rate " });
     if (product) {
       res.send(product.reviews);
     } else {

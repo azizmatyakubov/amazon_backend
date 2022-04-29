@@ -9,6 +9,7 @@ import {
   badRequestErrorHandler,
   unauthorizedErrorHandler,
 } from "./errorHandlers.js";
+import userRouter from "./services/user/user.js";
 
 const server = express();
 const port = process.env.PORT || 3002;
@@ -17,6 +18,7 @@ server.use(cors());
 server.use(express.json());
 
 server.use("/product", productRouter);
+server.use("/user", userRouter);
 // server.use('/reviews')
 // ******************************* ERROR MIDDLEWARES *************************
 
