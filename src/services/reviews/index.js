@@ -31,7 +31,7 @@ reviewsRouter.get("/", async (req, res, next) => {
 ///////////
 reviewsRouter.get("/:reviewId", async (req, res, next) => {
   try {
-    const updatedReview = await ReviewsModel.findByIdAndUpdate(req.params.blogId, { $push: { comments: req.body } }, { new: true })
+    // const updatedReview = await ReviewsModel.findByIdAndUpdate(req.params.blogId, { $push: { comments: req.body } }, { new: true })
 
     if (updatedReview) {
       res.status(201).send(updatedReview)
