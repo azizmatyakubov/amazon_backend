@@ -7,8 +7,10 @@ const reviewsRouter = express.Router()
 ///////////
 reviewsRouter.post("/", async (req, res, next) => {
   try {
-    const newreview = new ReviewsModel(req.body).save()
-    res.status(201).send(newreview.id)
+    const newreview = new ReviewsModel(req.body)
+    const { _id } = await newreview.save()
+
+    res.status(201).send({ _id })
   } catch (error) {
     next(error)
   }
