@@ -37,3 +37,4 @@ mongoose.connection.on("connected", () => {
     console.table(listendpoints(server));
   });
 });
+
